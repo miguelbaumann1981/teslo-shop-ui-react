@@ -1,4 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card';
+import type { Size } from '@/interfaces/product.interface';
 import { Link } from 'react-router';
 
 interface ProductCardProps {
@@ -7,6 +8,7 @@ interface ProductCardProps {
   price: number;
   image: string;
   category: string;
+  sizes: Size[];
 }
 
 export const ProductCard = ({
@@ -15,6 +17,7 @@ export const ProductCard = ({
   price,
   image,
   category,
+  sizes,
 }: ProductCardProps) => {
   return (
     <Link to={`product/${id}`}>
@@ -35,6 +38,7 @@ export const ProductCard = ({
               <p className='text-xs text-muted-foreground uppercase'>
                 {category}
               </p>
+              <span className='font-bold'>{sizes.join(', ')}</span>
             </div>
 
             <div className='flex items-center justify-between'>
