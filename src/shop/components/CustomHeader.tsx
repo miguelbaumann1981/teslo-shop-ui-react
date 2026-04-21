@@ -5,10 +5,12 @@ import { useRef } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router';
 import { cn } from '@/lib/utils';
 import { CustomLogo } from '@/components/custom/CustomLogo';
+import { useAuthStore } from '@/auth/store/auth.store';
 
 export const CustomHeader = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { gender } = useParams();
+  const { user, logout } = useAuthStore();
 
   const inputRef = useRef<HTMLInputElement>(null);
   const query = searchParams.get('query') || '';
@@ -94,11 +96,23 @@ export const CustomHeader = () => {
               <Search className='h-5 w-5' />
             </Button>
 
-            <Link to='/auth/login'>
-              <Button variant='default' size='sm' className='ml-2'>
-                Iniciar sesión
+            {!user ? (
+              <Link to='/auth/login'>
+                <Button variant='default' size='sm' className='ml-2'>
+                  Iniciar sesión
+                </Button>
+              </Link>
+            ) : (
+              <Button
+                variant='outline'
+                size='sm'
+                className='ml-2'
+                onClick={logout}
+              >
+                Cerrar sesión
               </Button>
-            </Link>
+            )}
+
             <Link to='/admin'>
               <Button variant='destructive' size='sm' className='ml-2'>
                 Administración
