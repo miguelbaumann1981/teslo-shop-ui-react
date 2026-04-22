@@ -10,8 +10,8 @@ export const checkAuthAction = async (): Promise<AuthResponse> => {
     const { data } = await tesloApi.get<AuthResponse>('/auth/check-status');
     localStorage.setItem('token', data.token);
     return data;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    console.log(error);
     localStorage.removeItem('token');
     throw new Error('Token expired or not valid');
   }

@@ -3,24 +3,24 @@ import type { Size } from '@/interfaces/product.interface';
 import { Link } from 'react-router';
 
 interface ProductCardProps {
-  id: string;
   name: string;
   price: number;
   image: string;
   category: string;
   sizes: Size[];
+  slug: string;
 }
 
 export const ProductCard = ({
-  id,
   name,
   price,
   image,
   category,
   sizes,
+  slug,
 }: ProductCardProps) => {
   return (
-    <Link to={`product/${id}`}>
+    <Link to={`/products/${slug}`}>
       <Card className='group border-0 shadow-none product-card-hover cursor-pointer'>
         <CardContent className='p-0'>
           <div className='relative aspect-square overflow-hidden bg-muted rounded-lg'>

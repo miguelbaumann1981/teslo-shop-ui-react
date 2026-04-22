@@ -3,14 +3,43 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CustomLogo } from '@/components/custom/CustomLogo';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
+import { useAuthStore } from '@/auth/store/auth.store';
+import { useState, type SubmitEvent } from 'react';
+import { toast } from 'sonner';
 
 export const RegisterPage = () => {
+  const navigate = useNavigate();
+  const [isPosting, setIsPosting] = useState(false);
+  const { register } = useAuthStore();
+
+  const handleRegister = async (event: SubmitEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    setIsPosting(true);
+    const formData = new FormData(event.target as HTMLFormElement);
+    const fullName = formData.get('fullName') as string;
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    const isRegisterValid = await register(fullName, email, password);
+    if (isRegisterValid) {
+      setTimeout(() => {
+        navigate('/auth/login');
+        toast.success('Se ha registrado correctamente');
+      }, 1500);
+      return;
+    }
+
+    toast.error('Correo y/o contraseña inválidos');
+    setIsPosting(false);
+  };
+
   return (
     <div className='flex flex-col gap-6'>
       <Card className='overflow-hidden p-0'>
         <CardContent className='grid p-0 md:grid-cols-2'>
-          <form className='p-6 md:p-8'>
+          <form className='p-6 md:p-8' onSubmit={handleRegister}>
             <div className='flex flex-col gap-6'>
               <div className='flex flex-col items-center text-center'>
                 <CustomLogo />
@@ -23,6 +52,7 @@ export const RegisterPage = () => {
                 <Input
                   id='fullName'
                   type='text'
+                  name='fullName'
                   placeholder='Nombre...'
                   required
                 />
@@ -32,6 +62,7 @@ export const RegisterPage = () => {
                 <Input
                   id='email'
                   type='email'
+                  name='email'
                   placeholder='mail@mail.com'
                   required
                 />
@@ -43,11 +74,12 @@ export const RegisterPage = () => {
                 <Input
                   id='password'
                   type='password'
+                  name='password'
                   placeholder='Contraseña...'
                   required
                 />
               </div>
-              <Button type='submit' className='w-full'>
+              <Button type='submit' className='w-full' disabled={isPosting}>
                 Registrar
               </Button>
 

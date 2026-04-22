@@ -15,7 +15,7 @@ export const NotAuthenticatedRoute = ({ children }: PropsWithChildren) => {
   const { authStatus } = useAuthStore();
   if (authStatus === 'checking') return null;
 
-  if (authStatus === 'non-authenticated') return <Navigate to='/' />;
+  if (authStatus === 'authenticated') return <Navigate to='/' />;
 
   return children;
 };

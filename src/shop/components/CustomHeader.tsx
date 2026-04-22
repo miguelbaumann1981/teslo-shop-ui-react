@@ -10,7 +10,7 @@ import { useAuthStore } from '@/auth/store/auth.store';
 export const CustomHeader = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { gender } = useParams();
-  const { authStatus, isAdmin, logout } = useAuthStore();
+  const { authStatus, isAdmin, logout, user } = useAuthStore();
 
   const inputRef = useRef<HTMLInputElement>(null);
   const query = searchParams.get('query') || '';
@@ -119,6 +119,12 @@ export const CustomHeader = () => {
                   Administración
                 </Button>
               </Link>
+            )}
+
+            {user && (
+              <span className='text-sm ml-3'>
+                Hola, <strong>{user.fullName}</strong>
+              </span>
             )}
           </div>
         </div>
