@@ -4,6 +4,8 @@ import type { Product } from '@/interfaces/product.interface';
 export const getProductBySlugAction = async (
   slug: string,
 ): Promise<Product> => {
+  if (!slug) throw new Error('Slug is required');
+
   const { data } = await tesloApi.get<Product>(`/products/${slug}`);
 
   return {
