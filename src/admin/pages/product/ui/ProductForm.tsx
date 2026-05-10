@@ -2,7 +2,7 @@ import { AdminTitle } from '@/admin/components/AdminTitle';
 import { Button } from '@/components/ui/button';
 import type { Product, Size } from '@/interfaces/product.interface';
 import { Plus, SaveAll, Tag, Upload, X } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { cn } from '@/lib/utils';
@@ -13,10 +13,16 @@ interface Props {
   product: Product;
   isLoading: boolean;
 
-  onSubmit: (productLike: Partial<Product>) => Promise<void>;
+  onSubmit: (
+    productLike: Partial<Product> & { files?: File[] },
+  ) => Promise<void>;
 }
 
 const availableSizes: Size[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+
+interface FormInputs extends Product {
+  files?: File[];
+}
 
 export const ProductForm = ({
   title,
@@ -32,9 +38,15 @@ export const ProductForm = ({
     getValues,
     setValue,
     watch,
-  } = useForm({
+  } = useForm<FormInputs>({
     defaultValues: product,
   });
+
+  const [files, setFiles] = useState<File[]>([]);
+
+  useEffect(() => {
+    setFiles([]);
+  }, [product]);
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const selectedSizes = watch('sizes');
@@ -95,12 +107,23 @@ export const ProductForm = ({
     e.stopPropagation();
     setDragActive(false);
     const files = e.dataTransfer.files;
-    console.log(files);
+
+    if (!files) return;
+
+    setFiles((prev) => [...prev, ...Array.from(files)]);
+
+    const currentFiles = getValues('files') || [];
+    setValue('files', [...currentFiles, ...Array.from(files)]);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    console.log(files);
+
+    if (!files) return;
+
+    setFiles((prev) => [...prev, ...Array.from(files)]);
+    const currentFiles = getValues('files') || [];
+    setValue('files', [...currentFiles, ...Array.from(files)]);
   };
 
   return (
@@ -452,6 +475,27 @@ export const ProductForm = ({
                       </p>
                     </div>
                   ))}
+                </div>
+              </div>
+
+              {/* Images loaded */}
+              <div className='mt-6 space-y-3'>
+                <h3 className='text-sm font-medium text-slate-700'>
+                  Imágenes por cargar
+                </h3>
+                <div className='grid grid-cols-2 gap-3'>
+                  {files.map((file, index) => (
+                    <img
+                      src={URL.createObjectURL(file)}
+                      key={index}
+                      alt='Product'
+                      className='w-full h-full object-cover rounded-lg'
+                    />
+                  ))}
+
+                  {files.length === 0 && (
+                    <p className='text-red-500 text-sm'>No hay archivos</p>
+                  )}
                 </div>
               </div>
             </div>

@@ -47,7 +47,7 @@ export const LoginPage = () => {
                   id='email'
                   type='email'
                   name='email'
-                  placeholder='mail@mail.com'
+                  placeholder='test1@google.com'
                   required
                 />
               </div>
@@ -65,7 +65,7 @@ export const LoginPage = () => {
                   id='password'
                   type='password'
                   name='password'
-                  placeholder='Contraseña...'
+                  placeholder='Abc123'
                   required
                 />
               </div>
